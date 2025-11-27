@@ -22,7 +22,7 @@ async function httpTrigger(req: HttpRequest, context: InvocationContext): Promis
         const pool = await sql.connect(config);
 
         // SELECT 実行（例: YourTable の先頭10件取得）
-        const result = await pool.request().query("SELECT TOP 10 * FROM YourTable");
+        const result = await pool.request().query("SELECT TOP 10 * FROM KINTAROU.T_WorkData");
 
         return {
             status: 200,
