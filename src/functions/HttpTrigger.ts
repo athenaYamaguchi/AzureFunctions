@@ -1,23 +1,22 @@
-import { 
-    app, 
-    HttpRequest, 
-    HttpResponseInit, 
-    InvocationContext 
-} from "@azure/functions";
 
-export async function HttpTrigger(
-    request: HttpRequest, 
-    context: InvocationContext
-): Promise<HttpResponseInit> {
-    context.log(`Http function processed request for url "${request.url}"`);
+import { HttpRequest, InvocationContext } from "@azure/functions";
+import * as sql from "mssql";
 
-    const name = request.query.get('name') || await request.text() || 'world';
+export default async function (req: HttpRequest, ctx: InvocationContext) {
+  const config: sql.config = {
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASSWORD,
+    database: process.env.SQL_DATABASE,
+    server: process.env.SQL_SERVER,
+    options: { encrypt: true, enableArithAbort: true }
+  };
 
-    return { body: `Hello, ${name}!` };
-};
-
-app.http('HttpTrigger', {
-    methods: ['GET', 'POST'],
-    authLevel: 'anonymous',
-    handler: HttpTrigger
-});
+  try {
+    const pool = await sql.connect(config);
+    const result = await pool.request().query("SELECT TOP 3 * FROM KINTAROU.T_WorkData");
+    return { status: 200, jsonBody: result.recordset };
+  } catch (e) {
+    ctx.error(e);
+    return { status: 500, body: "Server errorr" };
+  }
+}
