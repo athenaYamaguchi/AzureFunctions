@@ -13,7 +13,7 @@ export default async function (req: HttpRequest, ctx: InvocationContext) {
 
   try {
     const pool = await sql.connect(config);
-    const result = await pool.request().query("SELECT TOP 10 * FROM KINTAROU.T_WorkData");
+    const result = await pool.request().query("SELECT TOP 11 * FROM KINTAROU.T_WorkData");
     return { status: 200, jsonBody: result.recordset };
   } catch (e) {
     ctx.error(e);
