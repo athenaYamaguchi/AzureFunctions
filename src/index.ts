@@ -4,6 +4,6 @@ import HttpTrigger from "./functions/HttpTrigger";
 
 app.http("HttpTrigger", {
   methods: ["GET", "POST"],
-  authLevel: "function",
+  authLevel: "anonymous",
   handler: HttpTrigger
 });
