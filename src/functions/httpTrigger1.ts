@@ -17,6 +17,6 @@ export default async function (req: HttpRequest, ctx: InvocationContext) {
     return { status: 200, jsonBody: result.recordset };
   } catch (e) {
     ctx.error(e);
-    return { status: 500, body: "Server error" };
+    return { status: 500, body: "Server errorr" };
   }
 }
