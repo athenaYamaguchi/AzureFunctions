@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../../../dist/src/getData/index.js"
+  "scriptFile": "../../../dist/getData/index.js"
 }
