@@ -25,7 +25,10 @@
 import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
 
-export default async function (req: HttpRequest, ctx: InvocationContext) {
+export default async function (
+  req: HttpRequest, 
+  ctx: InvocationContext
+) {
   // 1) JSON ボディの受け取り
   let payload: { name?: string; isActive?: boolean } = {};
   try {
@@ -64,8 +67,8 @@ export default async function (req: HttpRequest, ctx: InvocationContext) {
     const whereClauses: string[] = [];
     if (payload.name) {
       // 部分一致検索（例）
-      request.input('name', sql.NVarChar, `%${payload.name}%`);
-      whereClauses.push('LAST_NAME LIKE @name'); // 例: 列名は実テーブルのカラムに合わせて
+      // request.input('name', sql.NVarChar, `%${payload.name}%`);
+      // whereClauses.push('LAST_NAME LIKE @name'); // 例: 列名は実テーブルのカラムに合わせて
     }
     if (typeof payload.isActive === 'boolean') {
       request.input('isActive', sql.Bit, payload.isActive);
