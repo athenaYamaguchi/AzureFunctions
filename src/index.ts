@@ -1,7 +1,7 @@
 // src/index.ts
 import { app } from "@azure/functions";
 import HttpTrigger from "./functions/HttpTrigger";
-import HttpTrigger2 from "./functions/HttpTrigger2";
+import getM_Users from "./functions/getM_Users";
 
 app.http("HttpTrigger", {
   methods: ["GET", "POST"],
@@ -9,9 +9,9 @@ app.http("HttpTrigger", {
   handler: HttpTrigger
 });
 
-app.http("HttpTrigger2", {
+app.http("getM_Users", {
   methods: ["GET", "POST"],
   authLevel: "anonymous",
-  handler: HttpTrigger2
+  handler: getM_Users
 });
 
