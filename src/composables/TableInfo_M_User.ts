@@ -8,7 +8,7 @@ import { COLTYPE} from './CommonTableType';
 type Item = Record<string, unknown>;
 
 // 実体をセット
-const COL_USER_ID: ColumnInfo = {
+export const COL_USER_ID: ColumnInfo = {
   columnTitle:    "ユーザーID",           
   columnName:     "USER_ID",              
   columnType:     COLTYPE.FREESTRINGUM,   

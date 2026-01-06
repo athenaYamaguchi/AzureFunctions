@@ -1,6 +1,7 @@
 // functions/HttpTrigger2.ts
 import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
+import { COL_USER_ID } from "../composables/TableInfo_M_User";
 
 export default async function (
   req: HttpRequest, 
@@ -51,9 +52,17 @@ export default async function (
     // if (payload.userName) {
       
     // }
-    if (payload.searchWords !== null) {
-      // 追加
-      whereClauses.push("USER_ID = 't-yamaguchi'")
+    if ((payload.searchWords != null) && 
+        (typeof payload.searchWords === "object")) {
+      const userId = payload.searchWords[COL_USER_ID.columnName];
+
+      if ((userId !== undefined) && 
+          (userId !== null) && 
+          (userId !== "")) {
+        // WHERE 句に条件を追加（パラメータ名は衝突しない名前に）
+        whereClauses.push("USER_ID = @userId");
+        request.input("userId", sql.NVarChar, String(userId));
+      }
     }
 
     const baseSql = 'SELECT * FROM ATHENA_WEB.M_Users';
