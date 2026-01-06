@@ -18,7 +18,7 @@ export default async function (
     } else {
       // GET の場合はクエリから受けてもOK（互換用）
       payload = {
-        userName: req.query.get('name') || undefined,        
+        userName: req.query['userName'] || undefined,        
         searchWords: req.query["searchWords"] 
           ? JSON.parse(req.query["searchWords"] as string)
           : undefined,
@@ -51,11 +51,11 @@ export default async function (
     // if (payload.userName) {
       
     // }
-    if (typeof payload.searchWords !== null) {
+    if (payload.searchWords !== null) {
       // 追加
-      whereClauses.push('USER_ID = "t-yamaguchi"')
+      whereClauses.push("USER_ID = 't-yamaguchi'")
     }
-    
+
     const baseSql = 'SELECT * FROM ATHENA_WEB.M_Users';
     const sqlText =
       whereClauses.length > 0
