@@ -60,8 +60,8 @@ export default async function (
           (userId !== null) && 
           (userId !== "")) {
         // WHERE 句に条件を追加（パラメータ名は衝突しない名前に）
-        whereClauses.push("USER_ID = @userId");
-        request.input("userId", sql.NVarChar, String(userId));
+        whereClauses.push(`${COL_USER_ID.columnName} = @${COL_USER_ID.columnName}`);
+        request.input(COL_USER_ID.columnName, sql.NVarChar, String(userId));
       }
     }
 
