@@ -1,26 +1,3 @@
-
-// import { HttpRequest, InvocationContext } from "@azure/functions";
-// import * as sql from "mssql";
-
-// export default async function (req: HttpRequest, ctx: InvocationContext) {
-//   const config: sql.config = {
-//     user: process.env.SQL_USER,
-//     password: process.env.SQL_PASSWORD,
-//     database: process.env.SQL_DATABASE,
-//     server: process.env.SQL_SERVER,
-//     options: { encrypt: true, enableArithAbort: true }
-//   };
-
-//   try {
-//     const pool = await sql.connect(config);
-//     const result = await pool.request().query("SELECT * FROM ATHENA_WEB.M_Users");
-//     return { status: 200, jsonBody: result.recordset };
-//   } catch (e) {
-//     ctx.error(e);
-//     return { status: 500, body: "Server errorr" };
-//   }
-// }
-
 // functions/HttpTrigger2.ts
 import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
@@ -30,15 +7,21 @@ export default async function (
   ctx: InvocationContext
 ) {
   // 1) JSON ボディの受け取り
-  let payload: { name?: string; isActive?: boolean } = {};
+  let payload: { 
+    userName?: string; 
+    searchWords?: Record<string, any | null> 
+  } = {};
+
   try {
     if (req.method === 'POST') {
       payload = await req.json(); // ← JSON をパース
     } else {
       // GET の場合はクエリから受けてもOK（互換用）
       payload = {
-        name: req.query.get('name') || undefined,
-        isActive: req.query.get('isActive') ? req.query.get('isActive') === 'true' : undefined,
+        userName: req.query.get('name') || undefined,        
+        searchWords: req.query["searchWords"] 
+          ? JSON.parse(req.query["searchWords"] as string)
+          : undefined,
       };
     }
   } catch (parseErr) {
@@ -65,16 +48,14 @@ export default async function (
     const request = pool.request();
 
     const whereClauses: string[] = [];
-    if (payload.name) {
-      // 部分一致検索（例）
-      // request.input('name', sql.NVarChar, `%${payload.name}%`);
-      // whereClauses.push('LAST_NAME LIKE @name'); // 例: 列名は実テーブルのカラムに合わせて
+    // if (payload.userName) {
+      
+    // }
+    if (typeof payload.searchWords !== null) {
+      // 追加
+      whereClauses.push('USER_ID = "t-yamaguchi"')
     }
-    if (typeof payload.isActive === 'boolean') {
-      request.input('isActive', sql.Bit, payload.isActive);
-      whereClauses.push('IsActive = @isActive'); // 例: 列名は実テーブルに合わせて
-    }
-
+    
     const baseSql = 'SELECT * FROM ATHENA_WEB.M_Users';
     const sqlText =
       whereClauses.length > 0
