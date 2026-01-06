@@ -1,6 +1,7 @@
 // functions/HttpTrigger2.ts
 import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
+
 import { COLTYPE } from "../composables/CommonTableType.js";
 import { columnData, COL_USER_ID} from "../composables/TableInfo_M_User.js";
 

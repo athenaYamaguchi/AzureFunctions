@@ -1,7 +1,7 @@
 /**
  * テーブル情報 マスタ ユーザー情報
  */
-import type { CommonTableInfo, SearchTemplateInfo, ColumnInfo} from './CommonTableType.ts';
+import type { CommonTableInfo, SearchTemplateInfo, ColumnInfo} from './CommonTableType';
 import { COLTYPE } from './CommonTableType';
 
 // テーブル用の型
