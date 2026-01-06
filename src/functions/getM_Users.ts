@@ -106,7 +106,7 @@ export default async function (
     };
   } catch (e) {
     ctx.error(e);
-    return { status: 500, body: "Server error" };
+    return { status: 500, body: e };
   } finally {
     // 5) 接続後始末（プールを閉じたい場合）
     try {
