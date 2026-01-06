@@ -84,17 +84,15 @@ export default async function (
             
             // 複数検索対象が存在する場合はorで結合する
             for (let wordIndex = 0; wordIndex < serchWords.length; wordIndex += 1) {
-              const prmName = item.columnName + String(wordIndex);
+              const prmName = item.columnName + "_" + String(wordIndex);
               whereClausesOR.push(`${item.columnName} = @${prmName}`);
               request.input(prmName, sql.NVarChar, String(serchWords[wordIndex]));
             }
 
             // WHERE 句に条件を追加
-            const sqlWhere =
-              whereClausesOR.length > 0
-                ? `${whereClausesOR.join(' AND ')}`
-                : '';
-            whereClauses.push(sqlWhere);
+            if (whereClausesOR.length > 0) {
+              whereClauses.push(`(${whereClausesOR.join(' OR ')})`);
+            }
           }
         }
       }
