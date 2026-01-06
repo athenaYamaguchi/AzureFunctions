@@ -1,7 +1,8 @@
 // functions/HttpTrigger2.ts
 import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
-import { columnData, COL_USER_ID,  } from "../composables/TableInfo_M_User";
+import { columnData, COL_USER_ID} from "../composables/TableInfo_M_User";
+import { COLTYPE } from "../composables/CommonTableType";
 
 export default async function (
   req: HttpRequest, 
@@ -58,9 +59,14 @@ export default async function (
         if ((serchWord !== undefined) && 
             (serchWord !== null) && 
             (serchWord !== "")) {
-          // WHERE 句に条件を追加
-          whereClauses.push(`${item.columnName} = @${item.columnName}`);
-          request.input(item.columnName, sql.NVarChar, String(serchWord));
+          
+          if (item.columnType === COLTYPE.FREESTRINGUM) {
+            // 自由入力
+
+            // WHERE 句に条件を追加
+            whereClauses.push(`${item.columnName} = @${item.columnName}`);
+            request.input(item.columnName, sql.NVarChar, String(serchWord));
+          }
         }
       }
     });
