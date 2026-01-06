@@ -56,19 +56,19 @@ export default async function (
       // 引数有り
 
       // カラム分繰り返す
-      for (let i = 0; i < columnData.length; i += 1) {
-        let serchWord = payload.searchWords[columnData[i].columnName];
+      for (const item of columnData) {
+        let serchWord = payload.searchWords[item.columnName];
 
         if ((serchWord !== undefined) && 
             (serchWord !== null) && 
             (serchWord !== "")) {
           
-          if (columnData[i].columnType === COLTYPE.FREESTRINGUM) {
+          if (item.columnType === COLTYPE.FREESTRINGUM) {
             // 自由入力
 
             // WHERE 句に条件を追加
-            whereClauses.push(`${columnData[i].columnName} = @${columnData[i].columnName}`);
-            request.input(columnData[i].columnName, sql.NVarChar, String(serchWord));
+            whereClauses.push(`${item.columnName} = @${item.columnName}`);
+            request.input(item.columnName, sql.NVarChar, String(serchWord));
           }
         }
       }
