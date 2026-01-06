@@ -106,7 +106,15 @@ export default async function (
     };
   } catch (e) {
     ctx.error(e);
-    return { status: 500, body: e };
+    return {
+      status: 500,
+      jsonBody: {
+        error: "Server error",
+        message: e?.message ?? String(e),
+        // 開発時はスタックを出してもOK（本番は外す）
+        stack: e?.stack
+      },
+    };
   } finally {
     // 5) 接続後始末（プールを閉じたい場合）
     try {
