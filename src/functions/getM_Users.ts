@@ -51,41 +51,41 @@ export default async function (
     // 検索条件を定義
     const whereClauses: string[] = [];
 
-    if ((payload.searchWords != null) && 
-        (typeof payload.searchWords === "object")) {
-      // 引数有り
-
-      // カラム分繰り返す
-      columnData.forEach(item => {
-        let serchWord = payload.searchWords[item.columnName];
-
-        if ((serchWord !== undefined) && 
-            (serchWord !== null) && 
-            (serchWord !== "")) {
-          
-          if (item.columnType === COLTYPE.FREESTRINGUM) {
-            // 自由入力
-
-            // WHERE 句に条件を追加
-            whereClauses.push(`${item.columnName} = @${item.columnName}`);
-            request.input(item.columnName, sql.NVarChar, String(serchWord));
-          }
-        }
-      });
-    }
-    
     // if ((payload.searchWords != null) && 
     //     (typeof payload.searchWords === "object")) {
-    //   const userId = payload.searchWords[COL_USER_ID.columnName];
+    //   // 引数有り
 
-    //   if ((userId !== undefined) && 
-    //       (userId !== null) && 
-    //       (userId !== "")) {
-    //     // WHERE 句に条件を追加
-    //     whereClauses.push(`${COL_USER_ID.columnName} = @${COL_USER_ID.columnName}`);
-    //     request.input(COL_USER_ID.columnName, sql.NVarChar, String(userId));
-    //   }
+    //   // カラム分繰り返す
+    //   columnData.forEach(item => {
+    //     let serchWord = payload.searchWords[item.columnName];
+
+    //     if ((serchWord !== undefined) && 
+    //         (serchWord !== null) && 
+    //         (serchWord !== "")) {
+          
+    //       if (item.columnType === COLTYPE.FREESTRINGUM) {
+    //         // 自由入力
+
+    //         // WHERE 句に条件を追加
+    //         whereClauses.push(`${item.columnName} = @${item.columnName}`);
+    //         request.input(item.columnName, sql.NVarChar, String(serchWord));
+    //       }
+    //     }
+    //   });
     // }
+    
+    if ((payload.searchWords != null) && 
+        (typeof payload.searchWords === "object")) {
+      const userId = payload.searchWords[COL_USER_ID.columnName];
+
+      if ((userId !== undefined) && 
+          (userId !== null) && 
+          (userId !== "")) {
+        // WHERE 句に条件を追加
+        whereClauses.push(`${COL_USER_ID.columnName} = @${COL_USER_ID.columnName}`);
+        request.input(COL_USER_ID.columnName, sql.NVarChar, String(userId));
+      }
+    }
 
     const baseSql = 'SELECT * FROM ATHENA_WEB.M_Users';
     const sqlText =
