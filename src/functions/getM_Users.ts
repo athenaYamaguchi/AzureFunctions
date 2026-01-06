@@ -5,6 +5,15 @@ import * as sql from "mssql";
 import { COLTYPE } from "../composables/CommonTableType";
 import { columnData } from "../composables/TableInfo_M_User";
 
+function splitCommaSeparated(str: string): string[] {
+  if (!str) return []; // 空文字なら空配列
+  return str
+    .split(",")        // カンマで分割
+    .map(s => s.trim()) // 前後の空白を除去
+    .filter(s => s !== ""); // 空要素を除外
+}
+
+
 export default async function (
   req: HttpRequest, 
   ctx: InvocationContext
@@ -58,18 +67,34 @@ export default async function (
 
       // カラム分繰り返す
       for (const item of columnData) {
-        let serchWord = payload.searchWords[item.columnName];
+        const whereClausesOR: string[] = [];
+        let serchRowWord = payload.searchWords[item.columnName];
 
-        if ((serchWord !== undefined) && 
-            (serchWord !== null) && 
-            (serchWord !== "")) {
-          
-          if (item.columnType === COLTYPE.FREESTRINGUM) {
-            // 自由入力
+        if ((serchRowWord !== undefined) && 
+            (serchRowWord !== null) && 
+            (serchRowWord !== "")) {
+          // 有効データ
+
+          // 複数選択されている場合があるためリストに変換する
+          const serchWords = splitCommaSeparated(serchRowWord);
+
+          if ((item.columnType === COLTYPE.FREESTRINGUM) ||
+              (item.columnType === COLTYPE.SELECTLIST)) {
+            // 自由入力 or 選択式
+            
+            // 複数検索対象が存在する場合はorで結合する
+            for (let wordIndex = 0; wordIndex < serchWords.length; wordIndex += 1) {
+              const prmName = item.columnName + String(wordIndex);
+              whereClausesOR.push(`${item.columnName} = @${prmName}`);
+              request.input(prmName, sql.NVarChar, String(serchWords[wordIndex]));
+            }
 
             // WHERE 句に条件を追加
-            whereClauses.push(`${item.columnName} = @${item.columnName}`);
-            request.input(item.columnName, sql.NVarChar, String(serchWord));
+            const sqlWhere =
+              whereClausesOR.length > 0
+                ? `${whereClausesOR.join(' AND ')}`
+                : '';
+            whereClauses.push(sqlWhere);
           }
         }
       }
