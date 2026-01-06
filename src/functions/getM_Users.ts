@@ -2,8 +2,8 @@
 import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
 
-import { COLTYPE } from "../composables/CommonTableType.js";
-import { columnData, COL_USER_ID} from "../composables/TableInfo_M_User.js";
+import { COLTYPE } from "../composables/CommonTableType";
+import { columnData } from "../composables/TableInfo_M_User";
 
 export default async function (
   req: HttpRequest, 
