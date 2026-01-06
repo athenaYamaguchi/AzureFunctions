@@ -2,7 +2,7 @@
  * テーブル情報 マスタ ユーザー情報
  */
 import type { CommonTableInfo, SearchTemplateInfo, ColumnInfo} from './CommonTableType.ts';
-import { COLTYPE} from './CommonTableType';
+import { COLTYPE } from './CommonTableType';
 
 // テーブル用の型
 type Item = Record<string, unknown>;
@@ -59,7 +59,7 @@ const COL_END_DATE: ColumnInfo = {
 }
 
 // 項目情報
-const columnData: ColumnInfo[] = [
+export const columnData: ColumnInfo[] = [
   COL_USER_ID,
   COL_LAST_NAME,
   COL_FIRST_NAME,
