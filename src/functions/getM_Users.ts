@@ -51,10 +51,13 @@ export default async function (
     // 検索条件を定義
     const whereClauses: string[] = [];
 
-    columnData.forEach(item => {
-      if ((payload.searchWords != null) && 
-          (typeof payload.searchWords === "object")) {
-        const serchWord = payload.searchWords[item.columnName];
+    if ((payload.searchWords != null) && 
+        (typeof payload.searchWords === "object")) {
+      // 引数有り
+
+      // カラム分繰り返す
+      columnData.forEach(item => {
+        let serchWord = payload.searchWords[item.columnName];
 
         if ((serchWord !== undefined) && 
             (serchWord !== null) && 
@@ -68,8 +71,8 @@ export default async function (
             request.input(item.columnName, sql.NVarChar, String(serchWord));
           }
         }
-      }
-    });
+      });
+    }
     
     // if ((payload.searchWords != null) && 
     //     (typeof payload.searchWords === "object")) {
