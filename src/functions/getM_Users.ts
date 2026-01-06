@@ -1,7 +1,7 @@
 // functions/HttpTrigger2.ts
 import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
-import { COL_USER_ID } from "../composables/TableInfo_M_User";
+import { columnData, COL_USER_ID,  } from "../composables/TableInfo_M_User";
 
 export default async function (
   req: HttpRequest, 
@@ -43,27 +43,40 @@ export default async function (
   let pool: sql.ConnectionPool | null = null;
 
   try {
+    // SQLを準備
     pool = await sql.connect(config);
-
-    // 3) パラメータ化クエリを構築（必要な条件だけ追加）
     const request = pool.request();
 
+    // 検索条件を定義
     const whereClauses: string[] = [];
-    // if (payload.userName) {
-      
-    // }
-    if ((payload.searchWords != null) && 
-        (typeof payload.searchWords === "object")) {
-      const userId = payload.searchWords[COL_USER_ID.columnName];
 
-      if ((userId !== undefined) && 
-          (userId !== null) && 
-          (userId !== "")) {
-        // WHERE 句に条件を追加（パラメータ名は衝突しない名前に）
-        whereClauses.push(`${COL_USER_ID.columnName} = @${COL_USER_ID.columnName}`);
-        request.input(COL_USER_ID.columnName, sql.NVarChar, String(userId));
+    columnData.forEach(item => {
+      if ((payload.searchWords != null) && 
+          (typeof payload.searchWords === "object")) {
+        const serchWord = payload.searchWords[item.columnName];
+
+        if ((serchWord !== undefined) && 
+            (serchWord !== null) && 
+            (serchWord !== "")) {
+          // WHERE 句に条件を追加
+          whereClauses.push(`${item.columnName} = @${item.columnName}`);
+          request.input(item.columnName, sql.NVarChar, String(serchWord));
+        }
       }
-    }
+    });
+    
+    // if ((payload.searchWords != null) && 
+    //     (typeof payload.searchWords === "object")) {
+    //   const userId = payload.searchWords[COL_USER_ID.columnName];
+
+    //   if ((userId !== undefined) && 
+    //       (userId !== null) && 
+    //       (userId !== "")) {
+    //     // WHERE 句に条件を追加
+    //     whereClauses.push(`${COL_USER_ID.columnName} = @${COL_USER_ID.columnName}`);
+    //     request.input(COL_USER_ID.columnName, sql.NVarChar, String(userId));
+    //   }
+    // }
 
     const baseSql = 'SELECT * FROM ATHENA_WEB.M_Users';
     const sqlText =
