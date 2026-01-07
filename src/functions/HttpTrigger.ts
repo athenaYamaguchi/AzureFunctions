@@ -3,6 +3,7 @@ import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
 
 export default async function (req: HttpRequest, ctx: InvocationContext) {
+  ctx.log(`Payload: test`);
   const config: sql.config = {
     user: process.env.SQL_USER,
     password: process.env.SQL_PASSWORD,

@@ -1,4 +1,3 @@
-// functions/HttpTrigger2.ts
 import { HttpRequest, InvocationContext } from "@azure/functions";
 import * as sql from "mssql";
 
@@ -67,8 +66,8 @@ export default async function (
       // 引数有り
 
       // カラム分繰り返す
+      const whereClausesOR: string[] = [];
       for (const item of columnData) {
-        const whereClausesOR: string[] = [];
         let serchRowWord = payload.searchWords[item.columnName];
         ctx.log(`Payload: ${item}`);
 
