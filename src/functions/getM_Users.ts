@@ -108,7 +108,7 @@ export default async function (
             // 開始と終了で必ず日付は登録されているため、条件をbetweenで作成する
             const prmNameSta = item.columnName + "_" + "STA"
             const prmNameEnd = item.columnName + "_" + "END"
-            const setBetween = `BETWEEN @${prmNameSta} AND @${prmNameEnd}`
+            const setBetween = `${item.columnName} BETWEEN @${prmNameSta} AND @${prmNameEnd}`
             // 条件に追加
             whereClauses.push(setBetween);
             request.input(prmNameSta, sql.NVarChar, String(serchWords[0])); 
