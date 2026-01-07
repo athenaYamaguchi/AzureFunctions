@@ -69,11 +69,13 @@ export default async function (
       for (const item of columnData) {
         const whereClausesOR: string[] = [];
         let serchRowWord = payload.searchWords[item.columnName];
+        ctx.log(`Payload: ${item}`);
 
         if ((serchRowWord !== undefined) && 
             (serchRowWord !== null) && 
             (serchRowWord !== "")) {
           // 有効データ
+          ctx.log(`文字：${serchRowWord}`);
 
           // 複数選択されている場合があるためリストに変換する
           const serchWords = splitCommaSeparated(serchRowWord);
@@ -104,6 +106,7 @@ export default async function (
           }
           else if (item.columnType === COLTYPE.DATE) {
             // 日付入力
+            ctx.log(`日付：${serchRowWord}`);
             
             // 開始と終了で必ず日付は登録されているため、条件をbetweenで作成する
             const prmNameSta = item.columnName + "_" + "STA"
