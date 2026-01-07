@@ -18,6 +18,7 @@ export default async function (
   req: HttpRequest, 
   ctx: InvocationContext
 ) {
+  ctx.log(`Payload: test`);
   // 1) JSON ボディの受け取り
   let payload: { 
     userName?: string; 
