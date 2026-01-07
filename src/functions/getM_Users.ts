@@ -79,20 +79,44 @@ export default async function (
           const serchWords = splitCommaSeparated(serchRowWord);
 
           if ((item.columnType === COLTYPE.FREESTRINGUM) ||
-              (item.columnType === COLTYPE.SELECTLIST)) {
-            // 自由入力 or 選択式
+              (item.columnType === COLTYPE.SELECTLIST) ||
+              (item.columnType === COLTYPE.NUM)) {
+            // 自由入力 or 選択式 or 数値
             
             // 複数検索対象が存在する場合はorで結合する
             for (let wordIndex = 0; wordIndex < serchWords.length; wordIndex += 1) {
               const prmName = item.columnName + "_" + String(wordIndex);
               whereClausesOR.push(`${item.columnName} = @${prmName}`);
-              request.input(prmName, sql.NVarChar, String(serchWords[wordIndex]));
+              if (item.columnType === COLTYPE.NUM) {
+                // 数値 (数値として扱う)
+                request.input(prmName, sql.Int, Math.trunc(Number(serchWords[wordIndex])));
+              }
+              else {
+                // 数値以外 (文字として扱う)
+                request.input(prmName, sql.NVarChar, String(serchWords[wordIndex])); 
+              }
             }
 
             // WHERE 句に条件を追加
             if (whereClausesOR.length > 0) {
               whereClauses.push(`(${whereClausesOR.join(' OR ')})`);
             }
+          }
+          else if (item.columnType === COLTYPE.DATE) {
+            // 日付入力
+            
+            // 開始と終了で必ず日付は登録されているため、条件をbetweenで作成する
+            const prmNameSta = item.columnName + "_" + "STA"
+            const prmNameEnd = item.columnName + "_" + "END"
+            const setBetween = `BETWEEN @${prmNameSta} AND @${prmNameEnd}`
+            // 条件に追加
+            whereClauses.push(setBetween);
+            request.input(prmNameSta, sql.NVarChar, String(serchWords[0])); 
+            request.input(prmNameEnd, sql.NVarChar, String(serchWords[1])); 
+          }
+          else {
+            // ありえない
+
           }
         }
       }
